@@ -21,8 +21,8 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@stacks/network": "^6.13.0",
-    "@stacks/transactions": "^6.13.0"
+    "@stacks/network": "^7.3.1",
+    "@stacks/transactions": "^7.4.0"
   },
   "devDependencies": {
     "tsup": "^8.0.2",
