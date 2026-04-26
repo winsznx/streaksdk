@@ -5,13 +5,13 @@ A professional TypeScript SDK for interacting with the Stacks habit-tracking sma
 ## Installation
 
 ```bash
-npm install streaksdk
+npm install @winsznx/streaksdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { StreakClient } from 'streaksdk';
+import { StreakClient } from '@winsznx/streaksdk';
 
 const client = new StreakClient({
     network: 'testnet',
