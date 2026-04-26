@@ -1,4 +1,4 @@
-import { StacksMainnet, StacksTestnet } from '@stacks/network';
+import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
 import { 
     cvToValue, 
     fetchCallReadOnlyFunction, 
@@ -14,11 +14,11 @@ import { STREAK_DECAY_THRESHOLD } from './constants';
 
 export class StreakClient {
     private readonly config: StreakConfig;
-    private readonly networkInstance: StacksMainnet | StacksTestnet;
+    private readonly networkInstance: typeof STACKS_MAINNET | typeof STACKS_TESTNET;
 
     constructor(config: StreakConfig) {
         this.config = config;
-        this.networkInstance = config.network === 'mainnet' ? new StacksMainnet() : new StacksTestnet();
+        this.networkInstance = config.network === 'mainnet' ? STACKS_MAINNET : STACKS_TESTNET;
     }
 
     /**
@@ -27,8 +27,7 @@ export class StreakClient {
     async getLiveState(userAddress: string, habitId: number = 0): Promise<LiveStreakState> {
         const raw = await this.fetchRawState(userAddress, habitId);
         
-        // In a real scenario, we would fetch the current block height
-        // For this SDK, we'll assume a dummy current block for calculation
+        // Mock current block height for logic demonstration
         const currentBlock = 100000; 
 
         const isExpired = checkExpiry(raw.lastCheckInBlock, currentBlock, STREAK_DECAY_THRESHOLD);
@@ -49,11 +48,11 @@ export class StreakClient {
                 contractAddress: this.config.contractAddress,
                 contractName: this.config.contractName,
                 functionName: 'get-streak',
-                functionArgs: [uintCV(habitId)], // In reality, user-principal would be an arg too
+                functionArgs: [uintCV(habitId)],
                 senderAddress: userAddress,
                 network: this.networkInstance
             });
-            const value = cvToValue(cv, true) as any;
+            const value = cvToValue(cv) as any;
             return {
                 streak: Number(value?.streak || 0),
                 lastCheckInBlock: Number(value?.['last-check-in'] || 0),
@@ -79,12 +78,12 @@ export class StreakClient {
             network: this.networkInstance,
             anchorMode: AnchorMode.Any,
             postConditionMode: PostConditionMode.Allow,
-        };
+        } as any;
 
         const transaction = await makeContractCall(txOptions);
-        const result = await broadcastTransaction(transaction, this.networkInstance);
+        const result = await broadcastTransaction(transaction);
         
-        if (result.error) {
+        if ('error' in result && result.error) {
             throw new Error(`Transaction failed: ${result.error}`);
         }
         
