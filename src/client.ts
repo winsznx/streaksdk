@@ -78,10 +78,10 @@ export class StreakClient {
             network: this.networkInstance,
             anchorMode: AnchorMode.Any,
             postConditionMode: PostConditionMode.Allow,
-        } as any;
+        };
 
         const transaction = await makeContractCall(txOptions);
-        const result = await broadcastTransaction(transaction);
+        const result = await broadcastTransaction({ transaction, network: this.networkInstance });
         
         if ('error' in result && result.error) {
             throw new Error(`Transaction failed: ${result.error}`);
